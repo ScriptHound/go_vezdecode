@@ -1,4 +1,4 @@
-package main
+package task_ten_points
 
 import (
 	"fmt"
@@ -7,25 +7,25 @@ import (
 	"time"
 )
 
-func check(e error) {
+func Check(e error) {
 	if e != nil {
 		panic(e)
 	}
 }
 
-func readTasks(filename string) string {
+func ReadTasks(filename string) string {
 	durations, err := ioutil.ReadFile(filename)
 
-	check(err)
+	Check(err)
 	return string(durations)
 }
 
-func task(duration string) {
+func Task(duration string) {
 	startTime := time.Now()
 	fmt.Printf("Task started at: %s\n", startTime)
 
 	parsedDuration, err := time.ParseDuration(duration)
-	check(err)
+	Check(err)
 	time.Sleep(parsedDuration)
 
 	finishTime := time.Now()
@@ -34,11 +34,11 @@ func task(duration string) {
 	fmt.Printf("Total task duration: %s\n", finishTime.Sub(startTime))
 }
 
-func main() {
-	durations := readTasks("tasks_durations.txt")
+func TenPointsMain() {
+	durations := ReadTasks("tasks_durations.txt")
 	splittedDurations := strings.Fields(durations)
 
 	for _, v := range splittedDurations {
-		task(v)
+		Task(v)
 	}
 }
