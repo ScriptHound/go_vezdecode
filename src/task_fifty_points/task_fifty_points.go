@@ -5,79 +5,99 @@ import (
 	"io/ioutil"
 	"os"
 	"reflect"
+	"strings"
 
 	"google.golang.org/protobuf/proto"
 )
 
-func checkCityCompatibility(fileData []byte) {
+func checkCityCompatibility(fileData []byte, filename string) {
 	city := Cities{}
+	typeName := reflect.TypeOf(city).Name()
 	if err := proto.Unmarshal(fileData, &city); err != nil {
-		noticement := "This file isnt compatible with %s schema\n"
-		typeName := reflect.TypeOf(city).Name()
-		fmt.Printf(noticement, typeName)
+		printIfCompatible(typeName, false, filename)
 	} else {
-		noticement := "This file is compatible with %s schema\n"
-		typeName := reflect.TypeOf(city).Name()
-		fmt.Printf(noticement, typeName)
-		fmt.Println(city.String())
-	}
-
-}
-
-func checkNameCompatibility(fileData []byte) {
-	name := Names{}
-	if err := proto.Unmarshal(fileData, &name); err != nil {
-		noticement := "This file isnt compatible with %s schema\n"
-		typeName := reflect.TypeOf(name).Name()
-		fmt.Printf(noticement, typeName)
-	} else {
-		noticement := "This file is compatible with %s schema\n"
-		typeName := reflect.TypeOf(name).Name()
-		fmt.Printf(noticement, typeName)
-		fmt.Println(name.String())
+		deserialized := city.String()
+		if !strings.Contains(deserialized, "\\x") {
+			printIfCompatible(typeName, true, filename)
+			fmt.Println(deserialized)
+		} else {
+			printIfCompatible(typeName, false, filename)
+		}
 	}
 }
 
-func checkPersonCompatibility(fileData []byte) {
+func checkNameCompatibility(fileData []byte, filename string) {
+	names := Names{}
+	typeName := reflect.TypeOf(names).Name()
+	if err := proto.Unmarshal(fileData, &names); err != nil {
+		printIfCompatible(typeName, false, filename)
+	} else {
+		deserialized := names.String()
+		if !strings.Contains(deserialized, "\\x") {
+			printIfCompatible(typeName, true, filename)
+			fmt.Println(deserialized)
+		} else {
+			printIfCompatible(typeName, false, filename)
+		}
+	}
+}
+
+func checkPersonCompatibility(fileData []byte, filename string) {
 	person := Person{}
+	typeName := reflect.TypeOf(person).Name()
 	if err := proto.Unmarshal(fileData, &person); err != nil {
-		noticement := "This file isnt compatible with %s schema\n"
-		typeName := reflect.TypeOf(person).Name()
-		fmt.Printf(noticement, typeName)
+		printIfCompatible(typeName, false, filename)
 	} else {
-		noticement := "This file is compatible with %s schema\n"
-		typeName := reflect.TypeOf(person).Name()
-		fmt.Printf(noticement, typeName)
-		fmt.Println(person.String())
+		deserialized := person.String()
+		if !strings.Contains(deserialized, "\\x") {
+			printIfCompatible(typeName, true, filename)
+			fmt.Println(deserialized)
+		} else {
+			printIfCompatible(typeName, false, filename)
+		}
 	}
 }
 
-func checkPointCompatibility(fileData []byte) {
-	point := Points{}
-	if err := proto.Unmarshal(fileData, &point); err != nil {
-		noticement := "This file isnt compatible with %s schema\n"
-		typeName := reflect.TypeOf(point).Name()
-		fmt.Printf(noticement, typeName)
+func checkPointCompatibility(fileData []byte, filename string) {
+	points := Points{}
+	typeName := reflect.TypeOf(points).Name()
+	if err := proto.Unmarshal(fileData, &points); err != nil {
+		printIfCompatible(typeName, false, filename)
 	} else {
-		noticement := "This file is compatible with %s schema\n"
-		typeName := reflect.TypeOf(point).Name()
-		fmt.Printf(noticement, typeName)
-		fmt.Println(point.String())
+		deserialized := points.String()
+		if !strings.Contains(deserialized, "\\x") {
+			printIfCompatible(typeName, true, filename)
+			fmt.Println(deserialized)
+		} else {
+			printIfCompatible(typeName, false, filename)
+		}
 	}
 }
 
-func checkTeamCompatibility(fileData []byte) {
+func checkTeamCompatibility(fileData []byte, filename string) {
 	team := Teams{}
+	typeName := reflect.TypeOf(team).Name()
 	if err := proto.Unmarshal(fileData, &team); err != nil {
-		noticement := "This file isnt compatible with %s schema\n"
-		typeName := reflect.TypeOf(team).Name()
-		fmt.Printf(noticement, typeName)
+		printIfCompatible(typeName, false, filename)
 	} else {
-		noticement := "This file is compatible with %s schema\n"
-		typeName := reflect.TypeOf(team).Name()
-		fmt.Printf(noticement, typeName)
-		fmt.Println(team.String())
+		deserialized := team.String()
+		if !strings.Contains(deserialized, "\\x") {
+			printIfCompatible(typeName, true, filename)
+			fmt.Println(deserialized)
+		} else {
+			printIfCompatible(typeName, false, filename)
+		}
 	}
+}
+
+func printIfCompatible(schema string, compatible bool, filename string) {
+	var notification string
+	if compatible {
+		notification = "This file %s is compatible with %s schema\n"
+	} else {
+		notification = "This file %s isnt compatible with %s schema\n"
+	}
+	fmt.Printf(notification, filename, schema)
 }
 
 func compatibilityChallenge(filename string) {
@@ -86,11 +106,11 @@ func compatibilityChallenge(filename string) {
 		fmt.Println(err)
 		panic("File not found")
 	}
-	checkCityCompatibility(in)
-	checkNameCompatibility(in)
-	checkPersonCompatibility(in)
-	checkPointCompatibility(in)
-	checkTeamCompatibility(in)
+	checkCityCompatibility(in, filename)
+	checkNameCompatibility(in, filename)
+	checkPersonCompatibility(in, filename)
+	checkPointCompatibility(in, filename)
+	checkTeamCompatibility(in, filename)
 
 }
 
@@ -109,5 +129,4 @@ func FiftyPointsMain() {
 		fullName := fmt.Sprintf("protobuff/pb/%s", filename)
 		compatibilityChallenge(fullName)
 	}
-	// compatibilityChallenge("protobuff/pb/example1.pb")
 }
