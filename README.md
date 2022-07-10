@@ -10,6 +10,8 @@ This is a project for Go task from VK hackathon
 
 40 points task is completed in src/task_fourty_points/task_fourty_points.go
 
+50 points task is completed in src/task_fifty_points/task_fifty_points.go
+
 # Deployment
 
 ```bash
