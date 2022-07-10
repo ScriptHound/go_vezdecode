@@ -36,3 +36,5 @@ make run
 make build
 ```
 
+To launch each task separately comment an appropriate line in cmd/main.go
+
