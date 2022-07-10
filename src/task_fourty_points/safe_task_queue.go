@@ -37,13 +37,13 @@ func (q *SafeQueue) ListAllTasks() string {
 }
 
 func (q *SafeQueue) GetTotalTaskDuration() string {
-	sum := 0
+	var sum int64 = 0
 	for _, task := range q.queue {
 		duration, err := time.ParseDuration(task.Duration)
 		ten_points.Check(err)
-		sum += int(duration.Seconds())
+		sum += int64(duration)
 	}
-	duration := time.Duration(sum * int(time.Second))
+	duration := time.Duration(sum)
 	return duration.String()
 }
 

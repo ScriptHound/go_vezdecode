@@ -37,14 +37,16 @@ func createTask(duration string) {
 
 func main() {
 	var wg sync.WaitGroup
-	totalDuration := 0
-	for i := 0; i < 100; i++ {
+	var totalDuration int64 = 0
+	for i := 0; i < 50; i++ {
 		randomSeed := rand.NewSource(time.Now().UnixNano())
 		randomGen := rand.New(randomSeed)
-		randomSeconds := randomGen.Intn(600)
+		randomSeconds := randomGen.Int63n(100)
 		totalDuration += randomSeconds
-		duration := time.Duration(randomSeconds * int(time.Second))
+		SECOND_TO_NANOSECOND := 1000000000
+		duration := time.Duration(randomSeconds * int64(SECOND_TO_NANOSECOND))
 		wg.Add(1)
+		time.Sleep(250 * time.Millisecond)
 		go func(duratuion time.Duration) {
 			createTask(duration.String())
 			wg.Done()
@@ -64,7 +66,19 @@ func main() {
 	var durationObj Duration
 	jsonData := string(data)
 	json.Unmarshal([]byte(jsonData), &durationObj)
-	fmt.Println(durationObj.TotalDuration)
+	parsedDuration, err := time.ParseDuration(durationObj.TotalDuration)
+	if err != nil {
+		panic(err)
+	}
+	parsedTotalDuration := int64(parsedDuration / time.Second)
+	fmt.Printf("Expected duration: %d ", totalDuration)
+	fmt.Printf("Actual duration: %d", parsedTotalDuration)
 
+	if totalDuration != parsedTotalDuration {
+		notification := `Expected and actual durations dont match.
+		Might be some tasks were lost
+		`
+		fmt.Println(notification)
+	}
 	wg.Wait()
 }
