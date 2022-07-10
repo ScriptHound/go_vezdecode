@@ -38,3 +38,8 @@ make build
 
 To launch each task separately comment an appropriate line in cmd/main.go
 
+# Testing 40 points task
+
+```bash
+go run testing/test_service.go
+```
