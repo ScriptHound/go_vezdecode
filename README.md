@@ -2,6 +2,8 @@
 
 This is a project for Go task from VK hackathon 
 
+Got 120 points of 150 on hackathon.
+
 10 points task is completed in src/task_ten_points/task_ten_points.go
 
 20 points task is completed in src/task_twenty_points/task_twenty_points.go
